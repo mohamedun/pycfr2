@@ -19,6 +19,7 @@ class CounterfactualRegretMinimizer(object):
             self.action_reachprobs.append({ infoset: [0,0,0] for infoset in s.policy })
 
     def run(self, num_iterations):
+
         for iteration in range(num_iterations):
             self.cfr()
             self.iterations += 1
@@ -370,6 +371,8 @@ class ChanceSamplingCFR(CounterfactualRegretMinimizer):
         # Update the strategies and regrets for each infoset
         hc = self.holecards[root.player][0:len(root.holecards[root.player])]
         infoset = self.rules.infoset_format(root.player, hc, root.board, root.bet_history)
+        print(infoset)
+        print(self.counterfactual_regret[root.player].keys()[:10])
         # Get the current CFR
         prev_cfr = self.counterfactual_regret[root.player][infoset]
         # Get the total positive CFR

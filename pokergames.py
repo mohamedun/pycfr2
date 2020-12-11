@@ -1,5 +1,6 @@
 from pokertrees import *
-
+from card import *
+from hand_evaluator import *
 def kuhn_eval(hc, board):
     return hc[0].rank
 
@@ -11,6 +12,22 @@ def half_street_kuhn_rules():
     rounds = [RoundInfo(holecards=1,boardcards=0,betsize=1,maxbets=[1,0])]
     return GameRules(players, deck, rounds, ante, blinds, handeval=kuhn_eval, infoset_format=leduc_format)
 
+def mo_eval(hc, board):
+    return HandEvaluator.Five.evaluate_rank(hc+board)
+
+def mo_format(player, holecards, board, bet_history):
+    cards =[ holecards[i].RANK_TO_STRING[holecards[i].rank] for i in range(len(holecards)) ]
+    if len(board) > 0:
+        cards += [ board[i].RANK_TO_STRING[board[i].rank] for i in range(len(board)) ]
+    return "{0}:{1}:".format(cards, bet_history)
+
+def mo_rules():
+    players = 2
+    deck = [Card(i,1) for i in range(2,15)]
+    ante = 1
+    blinds = None
+    rounds = [RoundInfo(holecards=2, boardcards=0, betsize=1, maxbets= [1,1]), RoundInfo(holecards = 0, boardcards = 3, betsize = 1, maxbets= [1,1])]
+    return GameRules(players, deck, rounds, ante, blinds, handeval = mo_eval, infoset_format= mo_format)
 def half_street_kuhn_gametree():
     rules = half_street_kuhn_rules()
     tree = GameTree(rules)
